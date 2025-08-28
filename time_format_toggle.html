@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Format Toggle</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 2rem;
+            background: #f9fafb;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-section {
+            margin: 2rem 0;
+        }
+        
+        /* Toggle styling (pure CSS) */
+        .time-toggle {
+            --h: 28px;
+            --w: 64px;
+            --p: 3px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-family: system-ui, sans-serif;
+            cursor: pointer;
+            user-select: none;
+        }
+        .time-toggle input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .time-toggle .slider {
+            width: var(--w);
+            height: var(--h);
+            background: #e5e7eb;            /* neutral-200 */
+            border-radius: calc(var(--h) / 2);
+            position: relative;
+            transition: background .2s ease;
+            box-shadow: inset 0 0 0 1px #d1d5db;
+        }
+        .time-toggle .slider::before {
+            content: "";
+            position: absolute;
+            top: var(--p);
+            left: var(--p);
+            width: calc(var(--h) - var(--p) * 2);
+            height: calc(var(--h) - var(--p) * 2);
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+            transition: transform .2s ease;
+        }
+        .time-toggle input:checked + .slider {
+            background: #60a5fa;            /* blue-400 */
+            box-shadow: inset 0 0 0 1px #3b82f6;
+        }
+        .time-toggle input:checked + .slider::before {
+            transform: translateX(calc(var(--w) - var(--h)));
+        }
+        .time-toggle .labels {
+            display: inline-flex;
+            gap: .25rem;
+            font-size: .9rem;
+            color: #6b7280;                  /* gray-500 */
+        }
+        .time-toggle input:not(:checked) ~ .labels span:first-child,
+        .time-toggle input:checked ~ .labels span:last-child {
+            color: #111827;                  /* gray-900 when active */
+            font-weight: 600;
+        }
+        
+        /* Time list styling */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        li.time {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #374151;
+            border-left: 4px solid #60a5fa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        li.time:hover {
+            background: #e5e7eb;
+            transform: translateX(2px);
+        }
+        
+        li.time[data-format="24h"] {
+            border-left-color: #10b981;
+        }
+        
+        .description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Time Format Toggle Component</h1>
+        <img src="images/time_format_toggle.png" alt="time_format_toggle.png" style="max-width: 300px; width: 100%;" />
+        
+        <div class="demo-section">
+            <p class="description">Toggle between 12-hour and 24-hour time formats. Your preference will be remembered using in-memory storage (note: localStorage is not available in this environment).</p>
+            
+            <!-- Toggle UI -->
+            <label class="time-toggle">
+                <input id="timeFormatToggle" type="checkbox" aria-label="Use 24-hour time">
+                <span class="slider" aria-hidden="true"></span>
+                <span class="labels"><span>12h</span><span>24h</span></span>
+            </label>
+        </div>
+        
+        <div class="demo-section">
+            <h3>Example Times</h3>
+            <p class="description">Click the times to see their full local timestamp in a tooltip:</p>
+            <!-- Example times (use any number of these) -->
+            <ul>
+                <li class="time" data-time="2025-08-27T09:05:00Z"></li>
+                <li class="time" data-time="2025-08-27T16:40:00Z"></li>
+                <li class="time" data-time="2025-08-27T23:59:00Z"></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Time formatting + persistence (modified to use in-memory storage)
+        (function () {
+            const toggle = document.getElementById('timeFormatToggle');
+            const NAMESPACE = 'pref_time_format'; // '12' or '24'
+            
+            // Use in-memory storage instead of localStorage
+            let memoryStorage = {};
+            
+            // read preference (default 12h)
+            const pref = memoryStorage[NAMESPACE] || '12';
+            toggle.checked = pref === '24';
+            
+            function formatTime(date, use24h = false) {
+                // you can swap to Intl if you prefer locale-aware:
+                // return new Intl.DateTimeFormat(undefined, {
+                //   hour: '2-digit', minute: '2-digit', hour12: !use24h
+                // }).format(date);
+                let h = date.getHours();
+                const m = date.getMinutes().toString().padStart(2, '0');
+                if (use24h) {
+                    return `${h.toString().padStart(2,'0')}:${m}`;
+                }
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                return `${h}:${m} ${ampm}`;
+            }
+            
+            function renderAll() {
+                const use24h = toggle.checked;
+                document.querySelectorAll('.time[data-time]').forEach(el => {
+                    const iso = el.getAttribute('data-time');
+                    const d = new Date(iso);
+                    el.textContent = formatTime(d, use24h);
+                    el.setAttribute('data-format', use24h ? '24h' : '12h');
+                    el.title = d.toLocaleString(); // tooltip with full local time
+                });
+            }
+            
+            toggle.addEventListener('change', () => {
+                memoryStorage[NAMESPACE] = toggle.checked ? '24' : '12';
+                renderAll();
+            });
+            
+            // Initial paint
+            renderAll();
+        })();
+    </script>
+</body>
+</html>
