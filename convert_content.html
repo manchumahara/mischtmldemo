@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Universal Converter - Free Online Content & Image Converter Tool</title>
+<meta name="description" content="Free online universal converter tool for content and images. Convert SCSS to CSS, HTML to Markdown, format code, encode/decode HTML entities, change text case, and convert image formats (PNG, JPG, WEBP, GIF). No registration required.">
+
+<meta name="keywords" content="online converter, content converter, image converter, SCSS to CSS, HTML formatter, markdown converter, HTML entity encoder, text case converter, image format converter, PNG to JPG, code formatter, JavaScript formatter, CSS formatter, HTML to markdown, markdown to HTML, camel case converter, uppercase converter, lowercase converter, WEBP converter, GIF converter, BMP converter, free online tool">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.12.5/sass.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/5.1.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turndown/7.1.2/turndown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.9/beautify.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px 50px 15px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            background: #fafbfc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .radio-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .radio-item.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .radio-item.selected::before {
+            content: '✓';
+            position: absolute;
+            right: 10px;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e1e8ed;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Image Conversion Styles */
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .image-preview {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin: 15px auto;
+            display: block;
+        }
+
+        .format-selector {
+            margin-bottom: 25px;
+        }
+
+        .format-selector select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+
+        .format-selector select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .image-result {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>Universal Converter</h1>
+            
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button 
+                    class="tab" 
+                    :class="{ active: activeTab === 'content' }"
+                    @click="activeTab = 'content'"
+                >
+                    Content Conversion
+                </button>
+                <button 
+                    class="tab" 
+                    :class="{ active: activeTab === 'image' }"
+                    @click="activeTab = 'image'"
+                >
+                    Image Conversion
+                </button>
+            </div>
+
+            <!-- Content Conversion Tab -->
+            <div class="tab-content" :class="{ active: activeTab === 'content' }">
+                <div class="form-group">
+                    <label for="input-content">Input Content:</label>
+                    <div class="textarea-container">
+                        <textarea
+                            id="input-content"
+                            v-model="inputContent"
+                            placeholder="Paste your content here..."
+                        ></textarea>
+                        <button class="copy-btn" @click="copyToClipboard('input')" :class="{ copied: inputCopied }">
+                            {{ inputCopied ? 'Copied!' : 'Copy' }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Conversion Type:</label>
+                    <div class="radio-group">
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'scss-to-css' }"
+                            @click="conversionType = 'scss-to-css'"
+                        >
+                            <input type="radio" value="scss-to-css" v-model="conversionType">
+                            <label>SCSS to CSS</label>
+                        </div>
+                        
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'css-to-scss' }"
+                            @click="conversionType = 'css-to-scss'"
+                        >
+                            <input type="radio" value="css-to-scss" v-model="conversionType">
+                            <label>CSS to SCSS</label>
+                        </div>
+                        
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'format-html' }"
+                            @click="conversionType = 'format-html'"
+                        >
+                            <input type="radio" value="format-html" v-model="conversionType">
+                            <label>Format HTML</label>
+                        </div>
+                        
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'html-to-markdown' }"
+                            @click="conversionType = 'html-to-markdown'"
+                        >
+                            <input type="radio" value="html-to-markdown" v-model="conversionType">
+                            <label>HTML to Markdown</label>
+                        </div>
+                        
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'markdown-to-html' }"
+                            @click="conversionType = 'markdown-to-html'"
+                        >
+                            <input type="radio" value="markdown-to-html" v-model="conversionType">
+                            <label>Markdown to HTML</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'html-encode' }"
+                            @click="conversionType = 'html-encode'"
+                        >
+                            <input type="radio" value="html-encode" v-model="conversionType">
+                            <label>HTML Entity Encode</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'html-decode' }"
+                            @click="conversionType = 'html-decode'"
+                        >
+                            <input type="radio" value="html-decode" v-model="conversionType">
+                            <label>HTML Entity Decode</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'css-formatter' }"
+                            @click="conversionType = 'css-formatter'"
+                        >
+                            <input type="radio" value="css-formatter" v-model="conversionType">
+                            <label>CSS Formatter</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'js-formatter' }"
+                            @click="conversionType = 'js-formatter'"
+                        >
+                            <input type="radio" value="js-formatter" v-model="conversionType">
+                            <label>JS Formatter</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'to-uppercase' }"
+                            @click="conversionType = 'to-uppercase'"
+                        >
+                            <input type="radio" value="to-uppercase" v-model="conversionType">
+                            <label>To Upper Case</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'to-lowercase' }"
+                            @click="conversionType = 'to-lowercase'"
+                        >
+                            <input type="radio" value="to-lowercase" v-model="conversionType">
+                            <label>To Lower Case</label>
+                        </div>
+
+                        <div 
+                            class="radio-item"
+                            :class="{ selected: conversionType === 'to-camelcase' }"
+                            @click="conversionType = 'to-camelcase'"
+                        >
+                            <input type="radio" value="to-camelcase" v-model="conversionType">
+                            <label>To Camel Case</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button 
+                    class="submit-btn" 
+                    @click="convertContent"
+                    :disabled="!inputContent.trim() || !conversionType || isLoading"
+                >
+                    <span v-if="isLoading" class="spinner"></span>
+                    {{ isLoading ? 'Converting...' : 'Convert' }}
+                </button>
+
+                <div v-if="showResult" class="result-section">
+                    <div v-if="errorMessage" class="error">
+                        {{ errorMessage }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="output-content">Converted Content:</label>
+                        <div class="textarea-container">
+                            <textarea
+                                id="output-content"
+                                v-model="outputContent"
+                                readonly
+                            ></textarea>
+                            <button class="copy-btn" @click="copyToClipboard('output')" :class="{ copied: outputCopied }">
+                                {{ outputCopied ? 'Copied!' : 'Copy' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Conversion Tab -->
+            <div class="tab-content" :class="{ active: activeTab === 'image' }">
+                <div class="form-group">
+                    <label>Upload Image:</label>
+                    <div 
+                        class="upload-area" 
+                        :class="{ dragover: isDragOver }"
+                        @dragover.prevent="isDragOver = true"
+                        @dragleave.prevent="isDragOver = false"
+                        @drop.prevent="handleFileDrop"
+                        @click="$refs.fileInput.click()"
+                    >
+                        <div v-if="!selectedImage">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21,15 16,10 5,21"/>
+                            </svg>
+                            <p style="margin: 15px 0 5px 0; font-weight: 600; color: #667eea;">
+                                Click to upload or drag and drop
+                            </p>
+                            <p style="color: #666; font-size: 14px;">
+                                Supports: PNG, JPG, JPEG, GIF, BMP, WEBP
+                            </p>
+                            <button class="upload-btn">Choose File</button>
+                        </div>
+                        <div v-else>
+                            <img :src="imagePreview" class="image-preview" alt="Preview">
+                            <p style="margin-top: 10px; color: #667eea; font-weight: 600;">
+                                {{ selectedImage.name }}
+                            </p>
+                            <button class="upload-btn" @click.stop="clearImage">Change Image</button>
+                        </div>
+                    </div>
+                    <input 
+                        ref="fileInput" 
+                        type="file" 
+                        class="file-input" 
+                        @change="handleFileSelect"
+                        accept="image/*"
+                    >
+                </div>
+
+                <div v-if="selectedImage" class="form-group">
+                    <label>Convert To:</label>
+                    <div class="format-selector">
+                        <select v-model="outputFormat">
+                            <option value="">Select output format</option>
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPG</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="webp">WEBP</option>
+                            <option value="gif">GIF</option>
+                            <option value="bmp">BMP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button 
+                    v-if="selectedImage && outputFormat"
+                    class="submit-btn" 
+                    @click="convertImage"
+                    :disabled="isImageLoading"
+                >
+                    <span v-if="isImageLoading" class="spinner"></span>
+                    {{ isImageLoading ? 'Converting...' : 'Convert Image' }}
+                </button>
+
+                <div v-if="convertedImage" class="image-result">
+                    <h3 style="margin-bottom: 15px; color: #333;">Converted Image:</h3>
+                    <img :src="convertedImage" class="image-preview" alt="Converted">
+                    <br>
+                    <a :href="convertedImage" :download="downloadFileName" class="download-btn">
+                        Download {{ outputFormat.toUpperCase() }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    activeTab: 'content',
+                    inputContent: '',
+                    outputContent: '',
+                    conversionType: '',
+                    showResult: false,
+                    errorMessage: '',
+                    isLoading: false,
+                    inputCopied: false,
+                    outputCopied: false,
+                    
+                    // Image conversion
+                    selectedImage: null,
+                    imagePreview: '',
+                    outputFormat: '',
+                    convertedImage: '',
+                    downloadFileName: '',
+                    isDragOver: false,
+                    isImageLoading: false
+                };
+            },
+            methods: {
+                async copyToClipboard(type) {
+                    const text = type === 'input' ? this.inputContent : this.outputContent;
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        if (type === 'input') {
+                            this.inputCopied = true;
+                            setTimeout(() => this.inputCopied = false, 2000);
+                        } else {
+                            this.outputCopied = true;
+                            setTimeout(() => this.outputCopied = false, 2000);
+                        }
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                    }
+                },
+
+                async convertContent() {
+                    if (!this.inputContent.trim() || !this.conversionType) {
+                        return;
+                    }
+
+                    this.isLoading = true;
+                    this.errorMessage = '';
+                    this.showResult = false;
+
+                    try {
+                        let result = '';
+                        
+                        switch (this.conversionType) {
+                            case 'scss-to-css':
+                                result = await this.scssToCSS(this.inputContent);
+                                break;
+                            case 'css-to-scss':
+                                result = this.cssToSCSS(this.inputContent);
+                                break;
+                            case 'format-html':
+                                result = this.formatHTML(this.inputContent);
+                                break;
+                            case 'html-to-markdown':
+                                result = this.htmlToMarkdown(this.inputContent);
+                                break;
+                            case 'markdown-to-html':
+                                result = this.markdownToHTML(this.inputContent);
+                                break;
+                            case 'html-encode':
+                                result = this.htmlEncode(this.inputContent);
+                                break;
+                            case 'html-decode':
+                                result = this.htmlDecode(this.inputContent);
+                                break;
+                            case 'css-formatter':
+                                result = this.formatCSS(this.inputContent);
+                                break;
+                            case 'js-formatter':
+                                result = this.formatJS(this.inputContent);
+                                break;
+                            case 'to-uppercase':
+                                result = this.inputContent.toUpperCase();
+                                break;
+                            case 'to-lowercase':
+                                result = this.inputContent.toLowerCase();
+                                break;
+                            case 'to-camelcase':
+                                result = this.toCamelCase(this.inputContent);
+                                break;
+                        }
+
+                        this.outputContent = result;
+                        this.showResult = true;
+                    } catch (error) {
+                        this.errorMessage = `Conversion error: ${error.message}`;
+                        this.showResult = true;
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                async scssToCSS(scss) {
+                    return new Promise((resolve, reject) => {
+                        Sass.compile(scss, (result) => {
+                            if (result.status === 0) {
+                                resolve(result.text);
+                            } else {
+                                reject(new Error(result.message));
+                            }
+                        });
+                    });
+                },
+
+                cssToSCSS(css) {
+                    let scss = css;
+                    scss = scss.replace(/([^{]+)\s*{\s*([^{}]+)\s*}/g, (match, selector, properties) => {
+                        const cleanSelector = selector.trim();
+                        const cleanProperties = properties.trim();
+                        
+                        if (cleanProperties) {
+                            const indentedProperties = cleanProperties
+                                .split(';')
+                                .filter(prop => prop.trim())
+                                .map(prop => `  ${prop.trim()};`)
+                                .join('\n');
+                            
+                            return `${cleanSelector} {\n${indentedProperties}\n}`;
+                        }
+                        return match;
+                    });
+                    
+                    return scss;
+                },
+
+                formatHTML(html) {
+                    return html_beautify(html, {
+                        indent_size: 2,
+                        indent_char: ' ',
+                        max_preserve_newlines: 2,
+                        preserve_newlines: true,
+                        wrap_line_length: 80,
+                        end_with_newline: true
+                    });
+                },
+
+                formatCSS(css) {
+                    return css_beautify(css, {
+                        indent_size: 2,
+                        indent_char: ' ',
+                        selector_separator_newline: true,
+                        newline_between_rules: true
+                    });
+                },
+
+                formatJS(js) {
+                    return js_beautify(js, {
+                        indent_size: 2,
+                        indent_char: ' ',
+                        max_preserve_newlines: 2,
+                        preserve_newlines: true,
+                        keep_array_indentation: false,
+                        break_chained_methods: false,
+                        indent_scripts: 'normal',
+                        brace_style: 'collapse',
+                        space_before_conditional: true,
+                        unescape_strings: false,
+                        wrap_line_length: 0,
+                        end_with_newline: false
+                    });
+                },
+
+                htmlToMarkdown(html) {
+                    const turndownService = new TurndownService({
+                        headingStyle: 'atx',
+                        codeBlockStyle: 'fenced'
+                    });
+                    return turndownService.turndown(html);
+                },
+
+                markdownToHTML(markdown) {
+                    return marked.parse(markdown);
+                },
+
+                htmlEncode(text) {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                },
+
+                htmlDecode(text) {
+                    const div = document.createElement('div');
+                    div.innerHTML = text;
+                    return div.textContent || div.innerText;
+                },
+
+                toCamelCase(str) {
+                    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+                        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+                    }).replace(/\s+/g, '');
+                },
+
+                // Image conversion methods
+                handleFileSelect(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.processFile(file);
+                    }
+                },
+
+                handleFileDrop(event) {
+                    this.isDragOver = false;
+                    const file = event.dataTransfer.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                        this.processFile(file);
+                    }
+                },
+
+                processFile(file) {
+                    this.selectedImage = file;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.imagePreview = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    this.convertedImage = '';
+                },
+
+                clearImage() {
+                    this.selectedImage = null;
+                    this.imagePreview = '';
+                    this.convertedImage = '';
+                    this.outputFormat = '';
+                    this.$refs.fileInput.value = '';
+                },
+
+                async convertImage() {
+                    if (!this.selectedImage || !this.outputFormat) return;
+
+                    this.isImageLoading = true;
+
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+
+                        img.onload = () => {
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+
+                            let mimeType = `image/${this.outputFormat}`;
+                            if (this.outputFormat === 'jpg') {
+                                mimeType = 'image/jpeg';
+                            }
+
+                            let quality = this.outputFormat === 'jpg' || this.outputFormat === 'jpeg' ? 0.9 : undefined;
+                            
+                            this.convertedImage = canvas.toDataURL(mimeType, quality);
+                            
+                            const originalName = this.selectedImage.name.split('.')[0];
+                            this.downloadFileName = `${originalName}_converted.${this.outputFormat}`;
+                            
+                            this.isImageLoading = false;
+                        };
+
+                        img.onerror = () => {
+                            this.errorMessage = 'Error loading image';
+                            this.isImageLoading = false;
+                        };
+
+                        img.src = this.imagePreview;
+
+                    } catch (error) {
+                        this.errorMessage = `Image conversion error: ${error.message}`;
+                        this.isImageLoading = false;
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
