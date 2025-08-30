@@ -704,8 +704,10 @@
                 <h3 style="margin-bottom: 20px; color: #333;">📱 QR Code Preview</h3>
 
                 <div class="qr-preview" :class="{ 'has-qr': qrCodeGenerated }">
-                    <canvas v-if="qrCodeGenerated" ref="qrCanvas"></canvas>
-                    <div v-else class="placeholder-text">
+                    <!--<canvas v-if="qrCodeGenerated" ref="qrCanvas"></canvas>-->
+                    <canvas v-if="isFormValid" ref="qrCanvas"></canvas>
+                    <!--<div v-else class="placeholder-text">-->
+                    <div v-if="!qrCodeGenerated" class="placeholder-text">
                         <p>🔳</p>
                         <p>Your QR code will appear here</p>
                         <p style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Fill in the form and click generate</p>
@@ -1048,7 +1050,7 @@
         this.selectedType = qr.type
         this.formData     = { ...qr.formData }
 
-        console.log(qr.settings);
+        //console.log(qr.settings);
 
         this.darkColor = qr.settings.color.dark;
         this.lightColor = qr.settings.color.light;
@@ -1157,7 +1159,10 @@
 
         this.errors          = {}
         this.qrCodeGenerated = false
-        this.successMessage  = ''
+        this.successMessage  = '';
+
+        this.darkColor = '#000000';
+        this.lightColor = '#FFFFFF'
       },
 
       validateForm () {
@@ -1357,6 +1362,13 @@
             throw new Error('QRCode library not loaded')
           }
 
+          /*const canvas = this.$refs.qrCanvas;
+          if (!canvas) {
+            this.successMessage = 'Canvas not found!';
+            this.qrCodeGenerated = false;
+            return;
+          }*/
+
           //console.log(this.darkColor);
           //console.log(this.lightColor);
 
@@ -1366,7 +1378,10 @@
             light: this.lightColor || '#FFFFFF'
           }
 
-          const qrContent = this.generateQRContent();
+         //this.$nextTick(() => {
+            const qrContent = this.generateQRContent();
+          //});
+
           const canvas    = this.$refs.qrCanvas;
 
           //console.log(this.qrSettings.color)
@@ -1376,7 +1391,7 @@
             margin: this.qrSettings.margin,
             color: color,
             errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
-          })
+          });
 
           this.qrCodeGenerated = true
           this.successMessage  = '✅ QR code generated successfully!'
