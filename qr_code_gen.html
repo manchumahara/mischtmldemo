@@ -6,8 +6,8 @@
     <title>QR Code Generator - Create QR Codes for Free</title>
     <script src="vendors/qrcode/bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
-
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -674,13 +674,23 @@
                         </div>
                     </div>
                     <div class="settings-group">
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <label for="darkColor">Foreground Color:</label>
                             <input type="color" id="darkColor" v-model="qrSettings.darkColor" :value="qrSettings.darkColor" class="color-input"/>
                         </div>
                         <div class="form-group">
                             <label for="lightColor">Background Color:</label>
                             <input type="color" id="lightColor" v-model="qrSettings.lightColor" :value="qrSettings.lightColor" class="color-input"/>
+                        </div>-->
+                        <div class="form-group">
+                            <label for="pickr-dark">Foreground Color:</label>
+                            <!-- <input type="color" ... /> -->
+                            <div id="pickr-dark"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickr-light">Background Color:</label>
+                            <!-- <input type="color" ... /> -->
+                            <div id="pickr-light"></div>
                         </div>
                     </div>
                 </div>
@@ -1339,6 +1349,9 @@
             throw new Error('QRCode library not loaded')
           }
 
+          //console.log(this.darkColor);
+          //console.log(this.lightColor);
+
           // Use current color values
           const color = {
             dark: this.darkColor || '#000000',
@@ -1370,6 +1383,11 @@
       downloadQR (format) {
         if (!this.qrCodeGenerated) return
 
+        const color = {
+          dark: this.darkColor || '#000000',
+          light: this.lightColor || '#FFFFFF'
+        }
+
         const canvas   = this.$refs.qrCanvas
         const fileName = `qr-code-${this.selectedType}-${Date.now()}`
 
@@ -1386,7 +1404,8 @@
               type: 'svg',
               width: this.qrSettings.width,
               margin: this.qrSettings.margin,
-              color: this.qrSettings.color,
+              //color: this.qrSettings.color,
+              color: color,
               errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
             }).then(svg => {
               const blob    = new Blob([svg], { type: 'image/svg+xml' })
@@ -1421,9 +1440,89 @@
         return
       }
 
+      // Dark Color Pickr
+      this.pickrDark = Pickr.create({
+        el: '#pickr-dark',
+        theme: 'classic', // or 'monolith', 'nano'
+        default: this.darkColor,
+        swatches: [
+          '#000000', '#333333', '#666666', '#764ba2', '#667eea', '#ffffff'
+        ],
+        components: {
+          preview: true,
+          opacity: true,
+          hue: true,
+          interaction: {
+            hex: true,
+            rgba: true,
+            input: true,
+            save: true
+          }
+        }
+      });
+
+      this.pickrDark.on('change', (color) => {
+        this.darkColor = color.toHEXA().toString();
+      });
+
+      this.pickrDark.on('save', (color, instance) => {
+        if (color) {
+          // User clicked save with a color selected
+          //const hexColor = color.toHEXA().toString(); // Get the color in HEXA format
+          this.darkColor = color.toHEXA().toString();
+          //console.log('Saved color:', hexColor);
+          // You can now use the hexColor value, for example, to update an element's background
+        } else {
+          // User clicked clear
+          //console.log('Color cleared');
+        }
+        // Optionally, hide the pickr instance after saving
+        instance.hide();
+      });
+
+      // Light Color Pickr
+      this.pickrLight = Pickr.create({
+        el: '#pickr-light',
+        theme: 'classic',
+        default: this.lightColor,
+        swatches: [
+          '#ffffff', '#f8f9fa', '#e0e0e0', '#ffd700', '#28a745', '#764ba2'
+        ],
+        components: {
+          preview: true,
+          opacity: true,
+          hue: true,
+          interaction: {
+            hex: true,
+            rgba: true,
+            input: true,
+            save: true
+          }
+        }
+      });
+
+      this.pickrLight.on('change', (color) => {
+        this.lightColor = color.toHEXA().toString();
+      });
+
+      this.pickrLight.on('save', (color, instance) => {
+        if (color) {
+          // User clicked save with a color selected
+          //const hexColor = color.toHEXA().toString(); // Get the color in HEXA format
+          this.lightColor = color.toHEXA().toString();
+          //console.log('Saved color:', hexColor);
+          // You can now use the hexColor value, for example, to update an element's background
+        } else {
+          // User clicked clear
+          //console.log('Color cleared');
+        }
+        // Optionally, hide the pickr instance after saving
+        instance.hide();
+      });
+
       // Ensure color inputs have default values
-      this.qrSettings.darkColor  = this.qrSettings.darkColor || '#000000'
-      this.qrSettings.lightColor = this.qrSettings.lightColor || '#FFFFFF'
+      //this.darkColor  = this.qrSettings.darkColor || '#000000'
+      //this.lightColor = this.qrSettings.lightColor || '#FFFFFF'
 
       // Initialize IndexedDB
       try {
