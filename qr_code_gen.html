@@ -862,6 +862,8 @@
         },
         darkColor: '#000000',
         lightColor: '#FFFFFF',
+        pickrDark : null,
+        pickrLight : null,
         qrSettings: {
           width: 300,
           margin: 4,
@@ -1054,6 +1056,9 @@
 
         this.darkColor = qr.settings.color.dark;
         this.lightColor = qr.settings.color.light;
+
+        this.pickrDark.setColor(this.darkColor);
+        this.pickrLight.setColor(this.lightColor);
 
         this.qrSettings   = { ...qr.settings }
 
