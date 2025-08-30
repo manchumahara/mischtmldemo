@@ -6,7 +6,7 @@
     <title>QR Code Generator - Create QR Codes for Free</title>
     <script src="vendors/qrcode/bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
-    
+
 
     <style>
         * {
@@ -37,7 +37,7 @@
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .header p {
@@ -56,14 +56,14 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .qr-section {
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
@@ -180,7 +180,7 @@
             margin-top: 50px;
             padding: 20px;
             text-align: center;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
 
@@ -204,15 +204,15 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-            
+
             .settings-group {
                 grid-template-columns: 1fr;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .form-section, .qr-section {
                 padding: 20px;
             }
@@ -323,7 +323,7 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             margin-bottom: 30px;
         }
 
@@ -432,1015 +432,1014 @@
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="container">
-            <div class="header">
-                <h1>🔳 QR Code Generator</h1>
-                <p>Create professional QR codes for all your needs - URLs, contacts, WiFi, and more!</p>
-            </div>
+<div id="app">
+    <div class="container">
+        <div class="header">
+            <h1>🔳 QR Code Generator</h1>
+            <p>Create professional QR codes for all your needs - URLs, contacts, WiFi, and more!</p>
+        </div>
 
-            <div class="main-content">
-                <div class="form-section">
-                    <div class="type-selector">
-                        <label for="qrType">Select QR Code Type:</label>
-                        <select id="qrType" v-model="selectedType" @change="resetForm">
-                            <option value="url">🌐 Website URL</option>
-                            <option value="text">📝 Plain Text</option>
-                            <option value="email">📧 Email</option>
-                            <option value="phone">📞 Phone Number</option>
-                            <option value="sms">💬 SMS Message</option>
-                            <option value="wifi">📶 WiFi Network</option>
-                            <option value="vcard">👤 Contact Card (vCard)</option>
-                            <option value="location">📍 Location</option>
-                            <option value="event">📅 Calendar Event</option>
-                            <option value="crypto">₿ Cryptocurrency</option>
+        <div class="main-content">
+            <div class="form-section">
+                <div class="type-selector">
+                    <label for="qrType">Select QR Code Type:</label>
+                    <select id="qrType" v-model="selectedType" @change="resetForm">
+                        <option value="url">🌐 Website URL</option>
+                        <option value="text">📝 Plain Text</option>
+                        <option value="email">📧 Email</option>
+                        <option value="phone">📞 Phone Number</option>
+                        <option value="sms">💬 SMS Message</option>
+                        <option value="wifi">📶 WiFi Network</option>
+                        <option value="vcard">👤 Contact Card (vCard)</option>
+                        <option value="location">📍 Location</option>
+                        <option value="event">📅 Calendar Event</option>
+                        <option value="crypto">₿ Cryptocurrency</option>
+                    </select>
+                </div>
+
+                <!-- URL Type -->
+                <div v-if="selectedType === 'url'">
+                    <div class="form-group">
+                        <label for="url">Website URL:</label>
+                        <input type="url" id="url" v-model="formData.url" placeholder="https://example.com" @input="validateForm">
+                        <div v-if="errors.url" class="error-message">{{ errors.url }}</div>
+                    </div>
+                </div>
+
+                <!-- Text Type -->
+                <div v-if="selectedType === 'text'">
+                    <div class="form-group">
+                        <label for="text">Text Content:</label>
+                        <textarea id="text" v-model="formData.text" placeholder="Enter your text here..." rows="4" @input="validateForm"></textarea>
+                        <div v-if="errors.text" class="error-message">{{ errors.text }}</div>
+                    </div>
+                </div>
+
+                <!-- Email Type -->
+                <div v-if="selectedType === 'email'">
+                    <div class="form-group">
+                        <label for="emailTo">Email Address:</label>
+                        <input type="email" id="emailTo" v-model="formData.emailTo" placeholder="recipient@example.com" @input="validateForm">
+                        <div v-if="errors.emailTo" class="error-message">{{ errors.emailTo }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailSubject">Subject (optional):</label>
+                        <input type="text" id="emailSubject" v-model="formData.emailSubject" placeholder="Email subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailBody">Message (optional):</label>
+                        <textarea id="emailBody" v-model="formData.emailBody" placeholder="Email message..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Phone Type -->
+                <div v-if="selectedType === 'phone'">
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" v-model="formData.phone" placeholder="+1234567890" @input="validateForm">
+                        <div v-if="errors.phone" class="error-message">{{ errors.phone }}</div>
+                    </div>
+                </div>
+
+                <!-- SMS Type -->
+                <div v-if="selectedType === 'sms'">
+                    <div class="form-group">
+                        <label for="smsNumber">Phone Number:</label>
+                        <input type="tel" id="smsNumber" v-model="formData.smsNumber" placeholder="+1234567890" @input="validateForm">
+                        <div v-if="errors.smsNumber" class="error-message">{{ errors.smsNumber }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="smsMessage">Message (optional):</label>
+                        <textarea id="smsMessage" v-model="formData.smsMessage" placeholder="SMS message..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- WiFi Type -->
+                <div v-if="selectedType === 'wifi'">
+                    <div class="form-group">
+                        <label for="wifiSSID">Network Name (SSID):</label>
+                        <input type="text" id="wifiSSID" v-model="formData.wifiSSID" placeholder="My WiFi Network" @input="validateForm">
+                        <div v-if="errors.wifiSSID" class="error-message">{{ errors.wifiSSID }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiPassword">Password:</label>
+                        <input type="password" id="wifiPassword" v-model="formData.wifiPassword" placeholder="WiFi password">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiSecurity">Security Type:</label>
+                        <select id="wifiSecurity" v-model="formData.wifiSecurity">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">Open Network</option>
                         </select>
                     </div>
-
-                    <!-- URL Type -->
-                    <div v-if="selectedType === 'url'">
-                        <div class="form-group">
-                            <label for="url">Website URL:</label>
-                            <input type="url" id="url" v-model="formData.url" placeholder="https://example.com" @input="validateForm">
-                            <div v-if="errors.url" class="error-message">{{ errors.url }}</div>
-                        </div>
-                    </div>
-
-                    <!-- Text Type -->
-                    <div v-if="selectedType === 'text'">
-                        <div class="form-group">
-                            <label for="text">Text Content:</label>
-                            <textarea id="text" v-model="formData.text" placeholder="Enter your text here..." rows="4" @input="validateForm"></textarea>
-                            <div v-if="errors.text" class="error-message">{{ errors.text }}</div>
-                        </div>
-                    </div>
-
-                    <!-- Email Type -->
-                    <div v-if="selectedType === 'email'">
-                        <div class="form-group">
-                            <label for="emailTo">Email Address:</label>
-                            <input type="email" id="emailTo" v-model="formData.emailTo" placeholder="recipient@example.com" @input="validateForm">
-                            <div v-if="errors.emailTo" class="error-message">{{ errors.emailTo }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="emailSubject">Subject (optional):</label>
-                            <input type="text" id="emailSubject" v-model="formData.emailSubject" placeholder="Email subject">
-                        </div>
-                        <div class="form-group">
-                            <label for="emailBody">Message (optional):</label>
-                            <textarea id="emailBody" v-model="formData.emailBody" placeholder="Email message..." rows="3"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Phone Type -->
-                    <div v-if="selectedType === 'phone'">
-                        <div class="form-group">
-                            <label for="phone">Phone Number:</label>
-                            <input type="tel" id="phone" v-model="formData.phone" placeholder="+1234567890" @input="validateForm">
-                            <div v-if="errors.phone" class="error-message">{{ errors.phone }}</div>
-                        </div>
-                    </div>
-
-                    <!-- SMS Type -->
-                    <div v-if="selectedType === 'sms'">
-                        <div class="form-group">
-                            <label for="smsNumber">Phone Number:</label>
-                            <input type="tel" id="smsNumber" v-model="formData.smsNumber" placeholder="+1234567890" @input="validateForm">
-                            <div v-if="errors.smsNumber" class="error-message">{{ errors.smsNumber }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="smsMessage">Message (optional):</label>
-                            <textarea id="smsMessage" v-model="formData.smsMessage" placeholder="SMS message..." rows="3"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- WiFi Type -->
-                    <div v-if="selectedType === 'wifi'">
-                        <div class="form-group">
-                            <label for="wifiSSID">Network Name (SSID):</label>
-                            <input type="text" id="wifiSSID" v-model="formData.wifiSSID" placeholder="My WiFi Network" @input="validateForm">
-                            <div v-if="errors.wifiSSID" class="error-message">{{ errors.wifiSSID }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="wifiPassword">Password:</label>
-                            <input type="password" id="wifiPassword" v-model="formData.wifiPassword" placeholder="WiFi password">
-                        </div>
-                        <div class="form-group">
-                            <label for="wifiSecurity">Security Type:</label>
-                            <select id="wifiSecurity" v-model="formData.wifiSecurity">
-                                <option value="WPA">WPA/WPA2</option>
-                                <option value="WEP">WEP</option>
-                                <option value="nopass">Open Network</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" v-model="formData.wifiHidden"> Hidden Network
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- vCard Type -->
-                    <div v-if="selectedType === 'vcard'">
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="vcardFirstName">First Name:</label>
-                                <input type="text" id="vcardFirstName" v-model="formData.vcardFirstName" placeholder="John" @input="validateForm">
-                            </div>
-                            <div class="form-group">
-                                <label for="vcardLastName">Last Name:</label>
-                                <input type="text" id="vcardLastName" v-model="formData.vcardLastName" placeholder="Doe" @input="validateForm">
-                            </div>
-                        </div>
-                        <div v-if="errors.vcardName" class="error-message">{{ errors.vcardName }}</div>
-                        <div class="form-group">
-                            <label for="vcardOrg">Organization (optional):</label>
-                            <input type="text" id="vcardOrg" v-model="formData.vcardOrg" placeholder="Company Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="vcardTitle">Job Title (optional):</label>
-                            <input type="text" id="vcardTitle" v-model="formData.vcardTitle" placeholder="Software Developer">
-                        </div>
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="vcardPhone">Phone:</label>
-                                <input type="tel" id="vcardPhone" v-model="formData.vcardPhone" placeholder="+1234567890">
-                            </div>
-                            <div class="form-group">
-                                <label for="vcardEmail">Email:</label>
-                                <input type="email" id="vcardEmail" v-model="formData.vcardEmail" placeholder="john@example.com">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="vcardWebsite">Website (optional):</label>
-                            <input type="url" id="vcardWebsite" v-model="formData.vcardWebsite" placeholder="https://example.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="vcardAddress">Address (optional):</label>
-                            <textarea id="vcardAddress" v-model="formData.vcardAddress" placeholder="123 Main St, City, State, ZIP" rows="2"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Location Type -->
-                    <div v-if="selectedType === 'location'">
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="latitude">Latitude:</label>
-                                <input type="number" id="latitude" v-model="formData.latitude" placeholder="40.7128" step="any" @input="validateForm">
-                                <div v-if="errors.latitude" class="error-message">{{ errors.latitude }}</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="longitude">Longitude:</label>
-                                <input type="number" id="longitude" v-model="formData.longitude" placeholder="-74.0060" step="any" @input="validateForm">
-                                <div v-if="errors.longitude" class="error-message">{{ errors.longitude }}</div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="locationName">Location Name (optional):</label>
-                            <input type="text" id="locationName" v-model="formData.locationName" placeholder="Times Square">
-                        </div>
-                    </div>
-
-                    <!-- Event Type -->
-                    <div v-if="selectedType === 'event'">
-                        <div class="form-group">
-                            <label for="eventTitle">Event Title:</label>
-                            <input type="text" id="eventTitle" v-model="formData.eventTitle" placeholder="Meeting with Client" @input="validateForm">
-                            <div v-if="errors.eventTitle" class="error-message">{{ errors.eventTitle }}</div>
-                        </div>
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="eventStartDate">Start Date:</label>
-                                <input type="datetime-local" id="eventStartDate" v-model="formData.eventStartDate" @input="validateForm">
-                            </div>
-                            <div class="form-group">
-                                <label for="eventEndDate">End Date:</label>
-                                <input type="datetime-local" id="eventEndDate" v-model="formData.eventEndDate">
-                            </div>
-                        </div>
-                        <div v-if="errors.eventDate" class="error-message">{{ errors.eventDate }}</div>
-                        <div class="form-group">
-                            <label for="eventLocation">Location (optional):</label>
-                            <input type="text" id="eventLocation" v-model="formData.eventLocation" placeholder="Conference Room A">
-                        </div>
-                        <div class="form-group">
-                            <label for="eventDescription">Description (optional):</label>
-                            <textarea id="eventDescription" v-model="formData.eventDescription" placeholder="Event details..." rows="3"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Crypto Type -->
-                    <div v-if="selectedType === 'crypto'">
-                        <div class="form-group">
-                            <label for="cryptoType">Cryptocurrency:</label>
-                            <select id="cryptoType" v-model="formData.cryptoType">
-                                <option value="bitcoin">Bitcoin (BTC)</option>
-                                <option value="ethereum">Ethereum (ETH)</option>
-                                <option value="litecoin">Litecoin (LTC)</option>
-                                <option value="dogecoin">Dogecoin (DOGE)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cryptoAddress">Wallet Address:</label>
-                            <input type="text" id="cryptoAddress" v-model="formData.cryptoAddress" placeholder="Wallet address" @input="validateForm">
-                            <div v-if="errors.cryptoAddress" class="error-message">{{ errors.cryptoAddress }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="cryptoAmount">Amount (optional):</label>
-                            <input type="number" id="cryptoAmount" v-model="formData.cryptoAmount" placeholder="0.001" step="any">
-                        </div>
-                        <div class="form-group">
-                            <label for="cryptoMessage">Message (optional):</label>
-                            <input type="text" id="cryptoMessage" v-model="formData.cryptoMessage" placeholder="Payment for...">
-                        </div>
-                    </div>
-
-                    <!-- Advanced Settings -->
-                    <div class="advanced-settings">
-                        <h3>🎨 Customization Options</h3>
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="errorLevel">Error Correction:</label>
-                                <select id="errorLevel" v-model="qrSettings.errorCorrectionLevel">
-                                    <option value="L">Low (7%)</option>
-                                    <option value="M">Medium (15%)</option>
-                                    <option value="Q">Quartile (25%)</option>
-                                    <option value="H">High (30%)</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="qrSize">Size (pixels):</label>
-                                <input type="number" id="qrSize" v-model="qrSettings.width" min="100" max="1000" step="50">
-                            </div>
-                        </div>
-                        <div class="settings-group">
-                            <div class="form-group">
-                                <label for="darkColor">Foreground Color:</label>
-                                <input type="color" id="darkColor" v-model="qrSettings.color.dark" :value="qrSettings.color.dark" class="color-input" />
-                            </div>
-                            <div class="form-group">
-                                <label for="lightColor">Background Color:</label>
-                                <input type="color" id="lightColor" v-model="qrSettings.color.light" :value="qrSettings.color.light" class="color-input" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn-primary" @click="generateQR" :disabled="!isFormValid">
-                        {{ isGenerating ? 'Generating...' : '🔳 Generate QR Code' }}
-                    </button>
-                </div>
-
-                <div class="qr-section">
-                    <h3 style="margin-bottom: 20px; color: #333;">📱 QR Code Preview</h3>
-                    
-                    <div class="qr-preview" :class="{ 'has-qr': qrCodeGenerated }">
-                        <canvas v-if="qrCodeGenerated" ref="qrCanvas"></canvas>
-                        <div v-else class="placeholder-text">
-                            <p>🔳</p>
-                            <p>Your QR code will appear here</p>
-                            <p style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Fill in the form and click generate</p>
-                        </div>
-                    </div>
-
-                    <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
-
-                    <div v-if="qrCodeGenerated">
-                        <button class="btn-save-current" @click="showSaveModal">
-                            💾 Save QR Code
-                        </button>
-                        <div>
-                            <button class="btn-secondary" @click="downloadQR('png')" style="margin-right: 10px;">
-                                📥 Download PNG
-                            </button>
-                            <button class="btn-secondary" @click="downloadQR('svg')">
-                                📥 Download SVG
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Saved QR Codes Section -->
-            <div v-if="savedQRs.length > 0" class="saved-section">
-                <h2>💾 Saved QR Codes</h2>
-                <table class="qr-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>QR Code</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="qr in savedQRs" :key="qr.id">
-                            <td><strong>{{ qr.title }}</strong></td>
-                            <td>{{ getTypeDisplayName(qr.type) }}</td>
-                            <td>
-                                <canvas :ref="'savedQR_' + qr.id" class="qr-preview-small"></canvas>
-                            </td>
-                            <td>{{ formatDate(qr.createdAt) }}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-small btn-edit" @click="editSavedQR(qr)" title="Edit">
-                                        ✏️ Edit
-                                    </button>
-                                    <button class="btn-small btn-download" @click="downloadSavedQR(qr)" title="Download">
-                                        📥 Download
-                                    </button>
-                                    <button class="btn-small btn-delete" @click="deleteSavedQR(qr.id)" title="Delete">
-                                        🗑️ Delete
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Save Modal -->
-            <div v-if="showSaveModalFlag" class="modal-overlay" @click.self="closeSaveModal">
-                <div class="modal">
-                    <h3>💾 Save QR Code</h3>
                     <div class="form-group">
-                        <label for="saveTitle">Title:</label>
-                        <input 
-                            type="text" 
-                            id="saveTitle" 
-                            v-model="saveTitle" 
+                        <label>
+                            <input type="checkbox" v-model="formData.wifiHidden"> Hidden Network
+                        </label>
+                    </div>
+                </div>
+
+                <!-- vCard Type -->
+                <div v-if="selectedType === 'vcard'">
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="vcardFirstName">First Name:</label>
+                            <input type="text" id="vcardFirstName" v-model="formData.vcardFirstName" placeholder="John" @input="validateForm">
+                        </div>
+                        <div class="form-group">
+                            <label for="vcardLastName">Last Name:</label>
+                            <input type="text" id="vcardLastName" v-model="formData.vcardLastName" placeholder="Doe" @input="validateForm">
+                        </div>
+                    </div>
+                    <div v-if="errors.vcardName" class="error-message">{{ errors.vcardName }}</div>
+                    <div class="form-group">
+                        <label for="vcardOrg">Organization (optional):</label>
+                        <input type="text" id="vcardOrg" v-model="formData.vcardOrg" placeholder="Company Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardTitle">Job Title (optional):</label>
+                        <input type="text" id="vcardTitle" v-model="formData.vcardTitle" placeholder="Software Developer">
+                    </div>
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="vcardPhone">Phone:</label>
+                            <input type="tel" id="vcardPhone" v-model="formData.vcardPhone" placeholder="+1234567890">
+                        </div>
+                        <div class="form-group">
+                            <label for="vcardEmail">Email:</label>
+                            <input type="email" id="vcardEmail" v-model="formData.vcardEmail" placeholder="john@example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardWebsite">Website (optional):</label>
+                        <input type="url" id="vcardWebsite" v-model="formData.vcardWebsite" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardAddress">Address (optional):</label>
+                        <textarea id="vcardAddress" v-model="formData.vcardAddress" placeholder="123 Main St, City, State, ZIP" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Location Type -->
+                <div v-if="selectedType === 'location'">
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="latitude">Latitude:</label>
+                            <input type="number" id="latitude" v-model="formData.latitude" placeholder="40.7128" step="any" @input="validateForm">
+                            <div v-if="errors.latitude" class="error-message">{{ errors.latitude }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="longitude">Longitude:</label>
+                            <input type="number" id="longitude" v-model="formData.longitude" placeholder="-74.0060" step="any" @input="validateForm">
+                            <div v-if="errors.longitude" class="error-message">{{ errors.longitude }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="locationName">Location Name (optional):</label>
+                        <input type="text" id="locationName" v-model="formData.locationName" placeholder="Times Square">
+                    </div>
+                </div>
+
+                <!-- Event Type -->
+                <div v-if="selectedType === 'event'">
+                    <div class="form-group">
+                        <label for="eventTitle">Event Title:</label>
+                        <input type="text" id="eventTitle" v-model="formData.eventTitle" placeholder="Meeting with Client" @input="validateForm">
+                        <div v-if="errors.eventTitle" class="error-message">{{ errors.eventTitle }}</div>
+                    </div>
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="eventStartDate">Start Date:</label>
+                            <input type="datetime-local" id="eventStartDate" v-model="formData.eventStartDate" @input="validateForm">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndDate">End Date:</label>
+                            <input type="datetime-local" id="eventEndDate" v-model="formData.eventEndDate">
+                        </div>
+                    </div>
+                    <div v-if="errors.eventDate" class="error-message">{{ errors.eventDate }}</div>
+                    <div class="form-group">
+                        <label for="eventLocation">Location (optional):</label>
+                        <input type="text" id="eventLocation" v-model="formData.eventLocation" placeholder="Conference Room A">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDescription">Description (optional):</label>
+                        <textarea id="eventDescription" v-model="formData.eventDescription" placeholder="Event details..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Crypto Type -->
+                <div v-if="selectedType === 'crypto'">
+                    <div class="form-group">
+                        <label for="cryptoType">Cryptocurrency:</label>
+                        <select id="cryptoType" v-model="formData.cryptoType">
+                            <option value="bitcoin">Bitcoin (BTC)</option>
+                            <option value="ethereum">Ethereum (ETH)</option>
+                            <option value="litecoin">Litecoin (LTC)</option>
+                            <option value="dogecoin">Dogecoin (DOGE)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cryptoAddress">Wallet Address:</label>
+                        <input type="text" id="cryptoAddress" v-model="formData.cryptoAddress" placeholder="Wallet address" @input="validateForm">
+                        <div v-if="errors.cryptoAddress" class="error-message">{{ errors.cryptoAddress }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cryptoAmount">Amount (optional):</label>
+                        <input type="number" id="cryptoAmount" v-model="formData.cryptoAmount" placeholder="0.001" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label for="cryptoMessage">Message (optional):</label>
+                        <input type="text" id="cryptoMessage" v-model="formData.cryptoMessage" placeholder="Payment for...">
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="advanced-settings">
+                    <h3>🎨 Customization Options</h3>
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="errorLevel">Error Correction:</label>
+                            <select id="errorLevel" v-model="qrSettings.errorCorrectionLevel">
+                                <option value="L">Low (7%)</option>
+                                <option value="M">Medium (15%)</option>
+                                <option value="Q">Quartile (25%)</option>
+                                <option value="H">High (30%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qrSize">Size (pixels):</label>
+                            <input type="number" id="qrSize" v-model="qrSettings.width" min="100" max="1000" step="50">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="darkColor">Foreground Color:</label>
+                            <input type="color" id="darkColor" v-model="qrSettings.darkColor" :value="qrSettings.darkColor" class="color-input"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="lightColor">Background Color:</label>
+                            <input type="color" id="lightColor" v-model="qrSettings.lightColor" :value="qrSettings.lightColor" class="color-input"/>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" @click="generateQR" :disabled="!isFormValid">
+                    {{ isGenerating ? 'Generating...' : '🔳 Generate QR Code' }}
+                </button>
+            </div>
+
+            <div class="qr-section">
+                <h3 style="margin-bottom: 20px; color: #333;">📱 QR Code Preview</h3>
+
+                <div class="qr-preview" :class="{ 'has-qr': qrCodeGenerated }">
+                    <canvas v-if="qrCodeGenerated" ref="qrCanvas"></canvas>
+                    <div v-else class="placeholder-text">
+                        <p>🔳</p>
+                        <p>Your QR code will appear here</p>
+                        <p style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Fill in the form and click generate</p>
+                    </div>
+                </div>
+
+                <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+
+                <div v-if="qrCodeGenerated">
+                    <button class="btn-save-current" @click="showSaveModal">
+                        💾 Save QR Code
+                    </button>
+                    <div>
+                        <button class="btn-secondary" @click="downloadQR('png')" style="margin-right: 10px;">
+                            📥 Download PNG
+                        </button>
+                        <button class="btn-secondary" @click="downloadQR('svg')">
+                            📥 Download SVG
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved QR Codes Section -->
+        <div v-if="savedQRs.length > 0" class="saved-section">
+            <h2>💾 Saved QR Codes</h2>
+            <table class="qr-table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>QR Code</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="qr in savedQRs" :key="qr.id">
+                    <td><strong>{{ qr.title }}</strong></td>
+                    <td>{{ getTypeDisplayName(qr.type) }}</td>
+                    <td>
+                        <canvas :ref="'savedQR_' + qr.id" class="qr-preview-small"></canvas>
+                    </td>
+                    <td>{{ formatDate(qr.createdAt) }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-edit" @click="editSavedQR(qr)" title="Edit">
+                                ✏️ Edit
+                            </button>
+                            <button class="btn-small btn-download" @click="downloadSavedQR(qr)" title="Download">
+                                📥 Download
+                            </button>
+                            <button class="btn-small btn-delete" @click="deleteSavedQR(qr.id)" title="Delete">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Save Modal -->
+        <div v-if="showSaveModalFlag" class="modal-overlay" @click.self="closeSaveModal">
+            <div class="modal">
+                <h3>💾 Save QR Code</h3>
+                <div class="form-group">
+                    <label for="saveTitle">Title:</label>
+                    <input
+                            type="text"
+                            id="saveTitle"
+                            v-model="saveTitle"
                             placeholder="Enter a title for this QR code..."
                             @keyup.enter="saveCurrentQR"
                             ref="saveTitleInput"
-                        >
-                        <div v-if="saveTitleError" class="error-message">{{ saveTitleError }}</div>
-                    </div>
-                    <div class="modal-buttons">
-                        <button class="btn-cancel" @click="closeSaveModal">Cancel</button>
-                        <button class="btn-save" @click="saveCurrentQR" :disabled="!saveTitle.trim()">Save</button>
-                    </div>
+                    >
+                    <div v-if="saveTitleError" class="error-message">{{ saveTitleError }}</div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-cancel" @click="closeSaveModal">Cancel</button>
+                    <button class="btn-save" @click="saveCurrentQR" :disabled="!saveTitle.trim()">Save</button>
                 </div>
             </div>
+        </div>
 
-            <div class="footer">
-                <p style="text-align: center;">This tool is Claude AI generated, prompted by <a target="_blank" href="https://sabujkundu.com">Sabuj Kundu</a></p>
-            </div>
+        <div class="footer">
+            <p style="text-align: center;">This tool is Claude AI generated, prompted by <a target="_blank" href="https://sabujkundu.com">Sabuj Kundu</a></p>
         </div>
     </div>
+</div>
 
-    <script>
-        const { createApp } = Vue;
+<script>
+  const { createApp } = Vue
 
-        createApp({
-            data() {
-                return {
-                    selectedType: 'url',
-                    qrCodeGenerated: false,
-                    isGenerating: false,
-                    successMessage: '',
-                    errors: {},
-                    savedQRs: [],
-                    showSaveModalFlag: false,
-                    saveTitle: '',
-                    saveTitleError: '',
-                    db: null,
-                    formData: {
-                        // URL
-                        url: '',
-                        // Text
-                        text: '',
-                        // Email
-                        emailTo: '',
-                        emailSubject: '',
-                        emailBody: '',
-                        // Phone
-                        phone: '',
-                        // SMS
-                        smsNumber: '',
-                        smsMessage: '',
-                        // WiFi
-                        wifiSSID: '',
-                        wifiPassword: '',
-                        wifiSecurity: 'WPA',
-                        wifiHidden: false,
-                        // vCard
-                        vcardFirstName: '',
-                        vcardLastName: '',
-                        vcardOrg: '',
-                        vcardTitle: '',
-                        vcardPhone: '',
-                        vcardEmail: '',
-                        vcardWebsite: '',
-                        vcardAddress: '',
-                        // Location
-                        latitude: '',
-                        longitude: '',
-                        locationName: '',
-                        // Event
-                        eventTitle: '',
-                        eventStartDate: '',
-                        eventEndDate: '',
-                        eventLocation: '',
-                        eventDescription: '',
-                        // Crypto
-                        cryptoType: 'bitcoin',
-                        cryptoAddress: '',
-                        cryptoAmount: '',
-                        cryptoMessage: ''
-                    },
-                    darkColor: '#000000',
-                    lightColor: '#FFFFFF',
-                    qrSettings: {
-                        width: 300,
-                        margin: 4,
-                        color: {
-                            dark: '#000000',
-                            light: '#FFFFFF'
-                        },
-                        errorCorrectionLevel: 'M'
-                    }
-                }
-            },
-            computed: {
-                isFormValid() {
-                    this.validateForm();
-                    return Object.keys(this.errors).length === 0;
-                }
-            },
-            methods: {
-                // IndexedDB Methods
-                async initDB() {
-                    return new Promise((resolve, reject) => {
-                        const request = indexedDB.open('QRCodeDB', 1);
-                        
-                        request.onerror = () => reject(request.error);
-                        request.onsuccess = () => {
-                            this.db = request.result;
-                            resolve(request.result);
-                        };
-                        
-                        request.onupgradeneeded = (event) => {
-                            const db = event.target.result;
-                            if (!db.objectStoreNames.contains('qrcodes')) {
-                                const store = db.createObjectStore('qrcodes', { keyPath: 'id', autoIncrement: true });
-                                store.createIndex('title', 'title', { unique: false });
-                                store.createIndex('createdAt', 'createdAt', { unique: false });
-                            }
-                        };
-                    });
-                },
+  createApp({
+    data () {
+      return {
+        selectedType: 'url',
+        qrCodeGenerated: false,
+        isGenerating: false,
+        successMessage: '',
+        errors: {},
+        savedQRs: [],
+        showSaveModalFlag: false,
+        saveTitle: '',
+        saveTitleError: '',
+        db: null,
+        formData: {
+          // URL
+          url: '',
+          // Text
+          text: '',
+          // Email
+          emailTo: '',
+          emailSubject: '',
+          emailBody: '',
+          // Phone
+          phone: '',
+          // SMS
+          smsNumber: '',
+          smsMessage: '',
+          // WiFi
+          wifiSSID: '',
+          wifiPassword: '',
+          wifiSecurity: 'WPA',
+          wifiHidden: false,
+          // vCard
+          vcardFirstName: '',
+          vcardLastName: '',
+          vcardOrg: '',
+          vcardTitle: '',
+          vcardPhone: '',
+          vcardEmail: '',
+          vcardWebsite: '',
+          vcardAddress: '',
+          // Location
+          latitude: '',
+          longitude: '',
+          locationName: '',
+          // Event
+          eventTitle: '',
+          eventStartDate: '',
+          eventEndDate: '',
+          eventLocation: '',
+          eventDescription: '',
+          // Crypto
+          cryptoType: 'bitcoin',
+          cryptoAddress: '',
+          cryptoAmount: '',
+          cryptoMessage: ''
+        },
+        darkColor: '#000000',
+        lightColor: '#FFFFFF',
+        qrSettings: {
+          width: 300,
+          margin: 4,
+          /*color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+          },*/
+          errorCorrectionLevel: 'M'
+        }
+      }
+    },
+    computed: {
+      isFormValid () {
+        this.validateForm()
+        return Object.keys(this.errors).length === 0
+      }
+    },
+    methods: {
+      // IndexedDB Methods
+      async initDB () {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open('QRCodeDB', 1)
 
-                async loadSavedQRs() {
-                    if (!this.db) return;
-                    
-                    return new Promise((resolve, reject) => {
-                        const transaction = this.db.transaction(['qrcodes'], 'readonly');
-                        const store = transaction.objectStore('qrcodes');
-                        const request = store.getAll();
-                        
-                        request.onsuccess = () => {
-                            this.savedQRs = request.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                            // Render saved QR codes
-                            this.$nextTick(() => {
-                                this.renderSavedQRs();
-                            });
-                            resolve(request.result);
-                        };
-                        request.onerror = () => reject(request.error);
-                    });
-                },
+          request.onerror   = () => reject(request.error)
+          request.onsuccess = () => {
+            this.db = request.result
+            resolve(request.result)
+          }
 
-                async renderSavedQRs() {
-                    for (const qr of this.savedQRs) {
-                        const canvasRef = this.$refs[`savedQR_${qr.id}`];
-                        if (canvasRef && canvasRef[0]) {
-                            try {
-                                await QRCode.toCanvas(canvasRef[0], qr.content, {
-                                    width: 60,
-                                    margin: 1,
-                                    color: qr.settings.color,
-                                    errorCorrectionLevel: qr.settings.errorCorrectionLevel
-                                });
-                            } catch (error) {
-                                console.error('Error rendering saved QR:', error);
-                            }
-                        }
-                    }
-                },
-
-                async saveQRToDB(qrData) {
-                    if (!this.db) return;
-                    
-                    return new Promise((resolve, reject) => {
-                        const transaction = this.db.transaction(['qrcodes'], 'readwrite');
-                        const store = transaction.objectStore('qrcodes');
-                        const request = store.add(qrData);
-                        
-                        request.onsuccess = () => {
-                            resolve(request.result);
-                        };
-                        request.onerror = () => reject(request.error);
-                    });
-                },
-
-                async updateQRInDB(qrData) {
-                    if (!this.db) return;
-                    
-                    return new Promise((resolve, reject) => {
-                        const transaction = this.db.transaction(['qrcodes'], 'readwrite');
-                        const store = transaction.objectStore('qrcodes');
-                        const request = store.put(qrData);
-                        
-                        request.onsuccess = () => {
-                            resolve(request.result);
-                        };
-                        request.onerror = () => reject(request.error);
-                    });
-                },
-
-                async deleteQRFromDB(id) {
-                    if (!this.db) return;
-                    
-                    return new Promise((resolve, reject) => {
-                        const transaction = this.db.transaction(['qrcodes'], 'readwrite');
-                        const store = transaction.objectStore('qrcodes');
-                        const request = store.delete(id);
-                        
-                        request.onsuccess = () => {
-                            resolve();
-                        };
-                        request.onerror = () => reject(request.error);
-                    });
-                },
-
-                // Modal Methods
-                showSaveModal() {
-                    if (!this.qrCodeGenerated) return;
-                    
-                    this.showSaveModalFlag = true;
-                    this.saveTitle = `${this.getTypeDisplayName(this.selectedType)} - ${new Date().toLocaleDateString()}`;
-                    this.saveTitleError = '';
-                    
-                    this.$nextTick(() => {
-                        if (this.$refs.saveTitleInput) {
-                            this.$refs.saveTitleInput.focus();
-                            this.$refs.saveTitleInput.select();
-                        }
-                    });
-                },
-
-                closeSaveModal() {
-                    this.showSaveModalFlag = false;
-                    this.saveTitle = '';
-                    this.saveTitleError = '';
-                },
-
-                async saveCurrentQR() {
-                    if (!this.saveTitle.trim()) {
-                        this.saveTitleError = 'Title is required';
-                        return;
-                    }
-
-                    try {
-                        const qrData = {
-                            title: this.saveTitle.trim(),
-                            type: this.selectedType,
-                            content: this.generateQRContent(),
-                            formData: { ...this.formData },
-                            settings: { ...this.qrSettings },
-                            createdAt: new Date().toISOString()
-                        };
-
-                        await this.saveQRToDB(qrData);
-                        await this.loadSavedQRs();
-                        
-                        this.closeSaveModal();
-                        this.successMessage = '✅ QR code saved successfully!';
-                        
-                        setTimeout(() => {
-                            this.successMessage = '';
-                        }, 3000);
-                    } catch (error) {
-                        console.error('Error saving QR code:', error);
-                        this.saveTitleError = 'Error saving QR code. Please try again.';
-                    }
-                },
-
-                // Saved QR Management Methods
-                editSavedQR(qr) {
-                    // Load the saved QR data into the form
-                    this.selectedType = qr.type;
-                    this.formData = { ...qr.formData };
-                    this.qrSettings = { ...qr.settings };
-                    
-                    // Generate the QR code
-                    this.$nextTick(() => {
-                        this.generateQR();
-                    });
-                    
-                    // Scroll to top
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                },
-
-                async downloadSavedQR(qr, format = 'png') {
-                    try {
-                        const fileName = `${qr.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${Date.now()}`;
-                        
-                        if (format === 'png') {
-                            const canvas = document.createElement('canvas');
-                            await QRCode.toCanvas(canvas, qr.content, {
-                                width: qr.settings.width || 300,
-                                margin: qr.settings.margin || 4,
-                                color: qr.settings.color,
-                                errorCorrectionLevel: qr.settings.errorCorrectionLevel || 'M'
-                            });
-                            
-                            const link = document.createElement('a');
-                            link.download = `${fileName}.png`;
-                            link.href = canvas.toDataURL();
-                            link.click();
-                        } else if (format === 'svg') {
-                            const svg = await QRCode.toString(qr.content, {
-                                type: 'svg',
-                                width: qr.settings.width || 300,
-                                margin: qr.settings.margin || 4,
-                                color: qr.settings.color,
-                                errorCorrectionLevel: qr.settings.errorCorrectionLevel || 'M'
-                            });
-                            
-                            const blob = new Blob([svg], { type: 'image/svg+xml' });
-                            const link = document.createElement('a');
-                            link.download = `${fileName}.svg`;
-                            link.href = URL.createObjectURL(blob);
-                            link.click();
-                            URL.revokeObjectURL(link.href);
-                        }
-                    } catch (error) {
-                        console.error('Error downloading QR code:', error);
-                    }
-                },
-
-                async deleteSavedQR(id) {
-                    if (!confirm('Are you sure you want to delete this QR code?')) return;
-                    
-                    try {
-                        await this.deleteQRFromDB(id);
-                        await this.loadSavedQRs();
-                        this.successMessage = '✅ QR code deleted successfully!';
-                        
-                        setTimeout(() => {
-                            this.successMessage = '';
-                        }, 3000);
-                    } catch (error) {
-                        console.error('Error deleting QR code:', error);
-                    }
-                },
-
-                // Utility Methods
-                getTypeDisplayName(type) {
-                    const types = {
-                        'url': '🌐 Website URL',
-                        'text': '📝 Plain Text',
-                        'email': '📧 Email',
-                        'phone': '📞 Phone',
-                        'sms': '💬 SMS',
-                        'wifi': '📶 WiFi',
-                        'vcard': '👤 Contact',
-                        'location': '📍 Location',
-                        'event': '📅 Event',
-                        'crypto': '₿ Crypto'
-                    };
-                    return types[type] || type.toUpperCase();
-                },
-
-                formatDate(dateString) {
-                    return new Date(dateString).toLocaleDateString() + ' ' + 
-                           new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                },
-                resetForm() {
-                    // Reset form data
-                    Object.keys(this.formData).forEach(key => {
-                        if (typeof this.formData[key] === 'boolean') {
-                            this.formData[key] = false;
-                        } else if (typeof this.formData[key] === 'string') {
-                            this.formData[key] = '';
-                        }
-                    });
-                    
-                    // Reset specific defaults
-                    this.formData.wifiSecurity = 'WPA';
-                    this.formData.cryptoType = 'bitcoin';
-                    
-                    this.errors = {};
-                    this.qrCodeGenerated = false;
-                    this.successMessage = '';
-                },
-
-                validateForm() {
-                    this.errors = {};
-
-                    switch (this.selectedType) {
-                        case 'url':
-                            if (!this.formData.url) {
-                                this.errors.url = 'URL is required';
-                            } else if (!/^https?:\/\/.+/.test(this.formData.url)) {
-                                this.errors.url = 'Please enter a valid URL starting with http:// or https://';
-                            }
-                            break;
-
-                        case 'text':
-                            if (!this.formData.text) {
-                                this.errors.text = 'Text content is required';
-                            }
-                            break;
-
-                        case 'email':
-                            if (!this.formData.emailTo) {
-                                this.errors.emailTo = 'Email address is required';
-                            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.emailTo)) {
-                                this.errors.emailTo = 'Please enter a valid email address';
-                            }
-                            break;
-
-                        case 'phone':
-                            if (!this.formData.phone) {
-                                this.errors.phone = 'Phone number is required';
-                            }
-                            break;
-
-                        case 'sms':
-                            if (!this.formData.smsNumber) {
-                                this.errors.smsNumber = 'Phone number is required';
-                            }
-                            break;
-
-                        case 'wifi':
-                            if (!this.formData.wifiSSID) {
-                                this.errors.wifiSSID = 'WiFi network name is required';
-                            }
-                            break;
-
-                        case 'vcard':
-                            if (!this.formData.vcardFirstName && !this.formData.vcardLastName) {
-                                this.errors.vcardName = 'At least first name or last name is required';
-                            }
-                            break;
-
-                        case 'location':
-                            if (!this.formData.latitude) {
-                                this.errors.latitude = 'Latitude is required';
-                            } else if (isNaN(this.formData.latitude) || this.formData.latitude < -90 || this.formData.latitude > 90) {
-                                this.errors.latitude = 'Latitude must be between -90 and 90';
-                            }
-                            if (!this.formData.longitude) {
-                                this.errors.longitude = 'Longitude is required';
-                            } else if (isNaN(this.formData.longitude) || this.formData.longitude < -180 || this.formData.longitude > 180) {
-                                this.errors.longitude = 'Longitude must be between -180 and 180';
-                            }
-                            break;
-
-                        case 'event':
-                            if (!this.formData.eventTitle) {
-                                this.errors.eventTitle = 'Event title is required';
-                            }
-                            if (!this.formData.eventStartDate) {
-                                this.errors.eventDate = 'Start date is required';
-                            }
-                            break;
-
-                        case 'crypto':
-                            if (!this.formData.cryptoAddress) {
-                                this.errors.cryptoAddress = 'Wallet address is required';
-                            }
-                            break;
-                    }
-                },
-
-                generateQRContent() {
-                    switch (this.selectedType) {
-                        case 'url':
-                            return this.formData.url;
-
-                        case 'text':
-                            return this.formData.text;
-
-                        case 'email':
-                            let emailContent = `mailto:${this.formData.emailTo}`;
-                            const params = [];
-                            if (this.formData.emailSubject) params.push(`subject=${encodeURIComponent(this.formData.emailSubject)}`);
-                            if (this.formData.emailBody) params.push(`body=${encodeURIComponent(this.formData.emailBody)}`);
-                            if (params.length > 0) emailContent += `?${params.join('&')}`;
-                            return emailContent;
-
-                        case 'phone':
-                            return `tel:${this.formData.phone}`;
-
-                        case 'sms':
-                            let smsContent = `sms:${this.formData.smsNumber}`;
-                            if (this.formData.smsMessage) {
-                                smsContent += `?body=${encodeURIComponent(this.formData.smsMessage)}`;
-                            }
-                            return smsContent;
-
-                        case 'wifi':
-                            const security = this.formData.wifiSecurity === 'nopass' ? 'nopass' : this.formData.wifiSecurity;
-                            const hidden = this.formData.wifiHidden ? 'true' : 'false';
-                            return `WIFI:T:${security};S:${this.formData.wifiSSID};P:${this.formData.wifiPassword};H:${hidden};;`;
-
-                        case 'vcard':
-                            let vcard = 'BEGIN:VCARD\nVERSION:3.0\n';
-                            if (this.formData.vcardFirstName || this.formData.vcardLastName) {
-                                vcard += `FN:${this.formData.vcardFirstName} ${this.formData.vcardLastName}\n`;
-                                vcard += `N:${this.formData.vcardLastName};${this.formData.vcardFirstName};;;\n`;
-                            }
-                            if (this.formData.vcardOrg) vcard += `ORG:${this.formData.vcardOrg}\n`;
-                            if (this.formData.vcardTitle) vcard += `TITLE:${this.formData.vcardTitle}\n`;
-                            if (this.formData.vcardPhone) vcard += `TEL:${this.formData.vcardPhone}\n`;
-                            if (this.formData.vcardEmail) vcard += `EMAIL:${this.formData.vcardEmail}\n`;
-                            if (this.formData.vcardWebsite) vcard += `URL:${this.formData.vcardWebsite}\n`;
-                            if (this.formData.vcardAddress) {
-                                vcard += `ADR:;;${this.formData.vcardAddress.replace(/,/g, ';')};;;\n`;
-                            }
-                            vcard += 'END:VCARD';
-                            return vcard;
-
-                        case 'location':
-                            let locationContent = `geo:${this.formData.latitude},${this.formData.longitude}`;
-                            if (this.formData.locationName) {
-                                locationContent += `?q=${this.formData.latitude},${this.formData.longitude}(${encodeURIComponent(this.formData.locationName)})`;
-                            }
-                            return locationContent;
-
-                        case 'event':
-                            const formatDate = (dateStr) => {
-                                if (!dateStr) return '';
-                                return new Date(dateStr).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-                            };
-                            
-                            let event = 'BEGIN:VEVENT\n';
-                            event += `SUMMARY:${this.formData.eventTitle}\n`;
-                            event += `DTSTART:${formatDate(this.formData.eventStartDate)}\n`;
-                            if (this.formData.eventEndDate) {
-                                event += `DTEND:${formatDate(this.formData.eventEndDate)}\n`;
-                            }
-                            if (this.formData.eventLocation) {
-                                event += `LOCATION:${this.formData.eventLocation}\n`;
-                            }
-                            if (this.formData.eventDescription) {
-                                event += `DESCRIPTION:${this.formData.eventDescription}\n`;
-                            }
-                            event += 'END:VEVENT';
-                            return event;
-
-                        case 'crypto':
-                            let cryptoContent = '';
-                            switch (this.formData.cryptoType) {
-                                case 'bitcoin':
-                                    cryptoContent = `bitcoin:${this.formData.cryptoAddress}`;
-                                    break;
-                                case 'ethereum':
-                                    cryptoContent = `ethereum:${this.formData.cryptoAddress}`;
-                                    break;
-                                case 'litecoin':
-                                    cryptoContent = `litecoin:${this.formData.cryptoAddress}`;
-                                    break;
-                                case 'dogecoin':
-                                    cryptoContent = `dogecoin:${this.formData.cryptoAddress}`;
-                                    break;
-                            }
-                            
-                            const cryptoParams = [];
-                            if (this.formData.cryptoAmount) cryptoParams.push(`amount=${this.formData.cryptoAmount}`);
-                            if (this.formData.cryptoMessage) cryptoParams.push(`message=${encodeURIComponent(this.formData.cryptoMessage)}`);
-                            if (cryptoParams.length > 0) cryptoContent += `?${cryptoParams.join('&')}`;
-                            
-                            return cryptoContent;
-
-                        default:
-                            return '';
-                    }
-                },
-
-                async generateQR() {
-                    if (!this.isFormValid) return;
-
-                    this.isGenerating = true;
-                    this.successMessage = '';
-
-                    try {
-                        // Wait for QRCode library to be available
-                        if (typeof QRCode === 'undefined') {
-                            throw new Error('QRCode library not loaded');
-                        }
-
-                        // Ensure colors are set to defaults if not selected
-                        if (!this.qrSettings.color.dark) {
-                            this.qrSettings.color.dark = '#000000';
-                        }
-                        if (!this.qrSettings.color.light) {
-                            this.qrSettings.color.light = '#FFFFFF';
-                        }
-
-
-                        const qrContent = this.generateQRContent();
-                        const canvas = this.$refs.qrCanvas;
-
-                        console.log(this.qrSettings.color);
-                        
-                        await QRCode.toCanvas(canvas, qrContent, {
-                            width: this.qrSettings.width,
-                            margin: this.qrSettings.margin,
-                            //color: this.qrSettings.color,
-                            color: {
-                                dark: this.qrSettings.color.dark,
-                                light: this.qrSettings.color.light
-                            },
-                                            errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
-                        });
-
-                        this.qrCodeGenerated = true;
-                        this.successMessage = '✅ QR code generated successfully!';
-                    } catch (error) {
-                        console.error('Error generating QR code:', error);
-                        this.successMessage = '❌ Error generating QR code. Please check your input and try again.';
-                    } finally {
-                        this.isGenerating = false;
-                    }
-                },
-
-                downloadQR(format) {
-                    if (!this.qrCodeGenerated) return;
-
-                    const canvas = this.$refs.qrCanvas;
-                    const fileName = `qr-code-${this.selectedType}-${Date.now()}`;
-
-                    try {
-                        if (format === 'png') {
-                            const link = document.createElement('a');
-                            link.download = `${fileName}.png`;
-                            link.href = canvas.toDataURL();
-                            link.click();
-                        } else if (format === 'svg') {
-                            // Generate SVG version
-                            const qrContent = this.generateQRContent();
-                            QRCode.toString(qrContent, {
-                                type: 'svg',
-                                width: this.qrSettings.width,
-                                margin: this.qrSettings.margin,
-                                color: this.qrSettings.color,
-                                errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
-                            }).then(svg => {
-                                const blob = new Blob([svg], { type: 'image/svg+xml' });
-                                const link = document.createElement('a');
-                                link.download = `${fileName}.svg`;
-                                link.href = URL.createObjectURL(blob);
-                                link.click();
-                                URL.revokeObjectURL(link.href);
-                            }).catch(error => {
-                                console.error('Error generating SVG:', error);
-                            });
-                        }
-                    } catch (error) {
-                        console.error('Error downloading QR code:', error);
-                    }
-                }
-            },
-
-            async mounted() {
-                // Wait for QRCode library to load
-                let attempts = 0;
-                const maxAttempts = 50;
-                
-                while (typeof QRCode === 'undefined' && attempts < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    attempts++;
-                }
-                
-                if (typeof QRCode === 'undefined') {
-                    console.error('QRCode library failed to load');
-                    this.successMessage = '❌ QR Code library failed to load. Please refresh the page.';
-                    return;
-                }
-                
-                // Ensure color inputs have default values
-                this.qrSettings.color.dark = this.qrSettings.color.dark || '#000000';
-                this.qrSettings.color.light = this.qrSettings.color.light || '#FFFFFF';
-
-                // Initialize IndexedDB
-                try {
-                    await this.initDB();
-                    await this.loadSavedQRs();
-                } catch (error) {
-                    console.error('Error initializing database:', error);
-                }
-                
-                // Set default datetime for event type
-                const now = new Date();
-                const futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
-                this.formData.eventStartDate = now.toISOString().slice(0, 16);
-                this.formData.eventEndDate = futureDate.toISOString().slice(0, 16);
+          request.onupgradeneeded = (event) => {
+            const db = event.target.result
+            if (!db.objectStoreNames.contains('qrcodes')) {
+              const store = db.createObjectStore('qrcodes', { keyPath: 'id', autoIncrement: true })
+              store.createIndex('title', 'title', { unique: false })
+              store.createIndex('createdAt', 'createdAt', { unique: false })
             }
-        }).mount('#app');
-    </script>
+          }
+        })
+      },
+
+      async loadSavedQRs () {
+        if (!this.db) return
+
+        return new Promise((resolve, reject) => {
+          const transaction = this.db.transaction(['qrcodes'], 'readonly')
+          const store       = transaction.objectStore('qrcodes')
+          const request     = store.getAll()
+
+          request.onsuccess = () => {
+            this.savedQRs = request.result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            // Render saved QR codes
+            this.$nextTick(() => {
+              this.renderSavedQRs()
+            })
+            resolve(request.result)
+          }
+          request.onerror   = () => reject(request.error)
+        })
+      },
+
+      async renderSavedQRs () {
+        for (const qr of this.savedQRs) {
+          const canvasRef = this.$refs[`savedQR_${qr.id}`]
+          if (canvasRef && canvasRef[0]) {
+            try {
+              await QRCode.toCanvas(canvasRef[0], qr.content, {
+                width: 60,
+                margin: 1,
+                color: qr.settings.color,
+                errorCorrectionLevel: qr.settings.errorCorrectionLevel
+              })
+            } catch (error) {
+              console.error('Error rendering saved QR:', error)
+            }
+          }
+        }
+      },
+
+      async saveQRToDB (qrData) {
+        if (!this.db) return
+
+        return new Promise((resolve, reject) => {
+          const transaction = this.db.transaction(['qrcodes'], 'readwrite')
+          const store       = transaction.objectStore('qrcodes')
+          const request     = store.add(qrData)
+
+          request.onsuccess = () => {
+            resolve(request.result)
+          }
+          request.onerror   = () => reject(request.error)
+        })
+      },
+
+      async updateQRInDB (qrData) {
+        if (!this.db) return
+
+        return new Promise((resolve, reject) => {
+          const transaction = this.db.transaction(['qrcodes'], 'readwrite')
+          const store       = transaction.objectStore('qrcodes')
+          const request     = store.put(qrData)
+
+          request.onsuccess = () => {
+            resolve(request.result)
+          }
+          request.onerror   = () => reject(request.error)
+        })
+      },
+
+      async deleteQRFromDB (id) {
+        if (!this.db) return
+
+        return new Promise((resolve, reject) => {
+          const transaction = this.db.transaction(['qrcodes'], 'readwrite')
+          const store       = transaction.objectStore('qrcodes')
+          const request     = store.delete(id)
+
+          request.onsuccess = () => {
+            resolve()
+          }
+          request.onerror   = () => reject(request.error)
+        })
+      },
+
+      // Modal Methods
+      showSaveModal () {
+        if (!this.qrCodeGenerated) return
+
+        this.showSaveModalFlag = true
+        this.saveTitle         = `${this.getTypeDisplayName(this.selectedType)} - ${new Date().toLocaleDateString()}`
+        this.saveTitleError    = ''
+
+        this.$nextTick(() => {
+          if (this.$refs.saveTitleInput) {
+            this.$refs.saveTitleInput.focus()
+            this.$refs.saveTitleInput.select()
+          }
+        })
+      },
+
+      closeSaveModal () {
+        this.showSaveModalFlag = false
+        this.saveTitle         = ''
+        this.saveTitleError    = ''
+      },
+
+      async saveCurrentQR () {
+        if (!this.saveTitle.trim()) {
+          this.saveTitleError = 'Title is required'
+          return
+        }
+
+        try {
+          const qrData = {
+            title: this.saveTitle.trim(),
+            type: this.selectedType,
+            content: this.generateQRContent(),
+            formData: { ...this.formData },
+            settings: {
+              ...this.qrSettings,
+              color: {
+                dark: this.darkColor,
+                light: this.lightColor
+              }
+            },
+            createdAt: new Date().toISOString()
+          }
+
+          await this.saveQRToDB(qrData)
+          await this.loadSavedQRs()
+
+          this.closeSaveModal()
+          this.successMessage = '✅ QR code saved successfully!'
+
+          setTimeout(() => {
+            this.successMessage = ''
+          }, 3000)
+        } catch (error) {
+          console.error('Error saving QR code:', error)
+          this.saveTitleError = 'Error saving QR code. Please try again.'
+        }
+      },
+
+      // Saved QR Management Methods
+      editSavedQR (qr) {
+        // Load the saved QR data into the form
+        this.selectedType = qr.type
+        this.formData     = { ...qr.formData }
+        this.qrSettings   = { ...qr.settings }
+
+        // Generate the QR code
+        this.$nextTick(() => {
+          this.generateQR()
+        })
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      },
+
+      async downloadSavedQR (qr, format = 'png') {
+        try {
+          const fileName = `${qr.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}-${Date.now()}`
+
+          if (format === 'png') {
+            const canvas = document.createElement('canvas')
+            await QRCode.toCanvas(canvas, qr.content, {
+              width: qr.settings.width || 300,
+              margin: qr.settings.margin || 4,
+              color: qr.settings.color,
+              errorCorrectionLevel: qr.settings.errorCorrectionLevel || 'M'
+            })
+
+            const link    = document.createElement('a')
+            link.download = `${fileName}.png`
+            link.href     = canvas.toDataURL()
+            link.click()
+          } else if (format === 'svg') {
+            const svg = await QRCode.toString(qr.content, {
+              type: 'svg',
+              width: qr.settings.width || 300,
+              margin: qr.settings.margin || 4,
+              color: qr.settings.color,
+              errorCorrectionLevel: qr.settings.errorCorrectionLevel || 'M'
+            })
+
+            const blob    = new Blob([svg], { type: 'image/svg+xml' })
+            const link    = document.createElement('a')
+            link.download = `${fileName}.svg`
+            link.href     = URL.createObjectURL(blob)
+            link.click()
+            URL.revokeObjectURL(link.href)
+          }
+        } catch (error) {
+          console.error('Error downloading QR code:', error)
+        }
+      },
+
+      async deleteSavedQR (id) {
+        if (!confirm('Are you sure you want to delete this QR code?')) return
+
+        try {
+          await this.deleteQRFromDB(id)
+          await this.loadSavedQRs()
+          this.successMessage = '✅ QR code deleted successfully!'
+
+          setTimeout(() => {
+            this.successMessage = ''
+          }, 3000)
+        } catch (error) {
+          console.error('Error deleting QR code:', error)
+        }
+      },
+
+      // Utility Methods
+      getTypeDisplayName (type) {
+        const types = {
+          'url': '🌐 Website URL',
+          'text': '📝 Plain Text',
+          'email': '📧 Email',
+          'phone': '📞 Phone',
+          'sms': '💬 SMS',
+          'wifi': '📶 WiFi',
+          'vcard': '👤 Contact',
+          'location': '📍 Location',
+          'event': '📅 Event',
+          'crypto': '₿ Crypto'
+        }
+        return types[type] || type.toUpperCase()
+      },
+
+      formatDate (dateString) {
+        return new Date(dateString).toLocaleDateString() + ' ' +
+               new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      },
+      resetForm () {
+        // Reset form data
+        Object.keys(this.formData).forEach(key => {
+          if (typeof this.formData[key] === 'boolean') {
+            this.formData[key] = false
+          } else if (typeof this.formData[key] === 'string') {
+            this.formData[key] = ''
+          }
+        })
+
+        // Reset specific defaults
+        this.formData.wifiSecurity = 'WPA'
+        this.formData.cryptoType   = 'bitcoin'
+
+        this.errors          = {}
+        this.qrCodeGenerated = false
+        this.successMessage  = ''
+      },
+
+      validateForm () {
+        this.errors = {}
+
+        switch (this.selectedType) {
+          case 'url':
+            if (!this.formData.url) {
+              this.errors.url = 'URL is required'
+            } else if (!/^https?:\/\/.+/.test(this.formData.url)) {
+              this.errors.url = 'Please enter a valid URL starting with http:// or https://'
+            }
+            break
+
+          case 'text':
+            if (!this.formData.text) {
+              this.errors.text = 'Text content is required'
+            }
+            break
+
+          case 'email':
+            if (!this.formData.emailTo) {
+              this.errors.emailTo = 'Email address is required'
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.emailTo)) {
+              this.errors.emailTo = 'Please enter a valid email address'
+            }
+            break
+
+          case 'phone':
+            if (!this.formData.phone) {
+              this.errors.phone = 'Phone number is required'
+            }
+            break
+
+          case 'sms':
+            if (!this.formData.smsNumber) {
+              this.errors.smsNumber = 'Phone number is required'
+            }
+            break
+
+          case 'wifi':
+            if (!this.formData.wifiSSID) {
+              this.errors.wifiSSID = 'WiFi network name is required'
+            }
+            break
+
+          case 'vcard':
+            if (!this.formData.vcardFirstName && !this.formData.vcardLastName) {
+              this.errors.vcardName = 'At least first name or last name is required'
+            }
+            break
+
+          case 'location':
+            if (!this.formData.latitude) {
+              this.errors.latitude = 'Latitude is required'
+            } else if (isNaN(this.formData.latitude) || this.formData.latitude < -90 || this.formData.latitude > 90) {
+              this.errors.latitude = 'Latitude must be between -90 and 90'
+            }
+            if (!this.formData.longitude) {
+              this.errors.longitude = 'Longitude is required'
+            } else if (isNaN(this.formData.longitude) || this.formData.longitude < -180 || this.formData.longitude > 180) {
+              this.errors.longitude = 'Longitude must be between -180 and 180'
+            }
+            break
+
+          case 'event':
+            if (!this.formData.eventTitle) {
+              this.errors.eventTitle = 'Event title is required'
+            }
+            if (!this.formData.eventStartDate) {
+              this.errors.eventDate = 'Start date is required'
+            }
+            break
+
+          case 'crypto':
+            if (!this.formData.cryptoAddress) {
+              this.errors.cryptoAddress = 'Wallet address is required'
+            }
+            break
+        }
+      },
+
+      generateQRContent () {
+        switch (this.selectedType) {
+          case 'url':
+            return this.formData.url
+
+          case 'text':
+            return this.formData.text
+
+          case 'email':
+            let emailContent = `mailto:${this.formData.emailTo}`
+            const params     = []
+            if (this.formData.emailSubject) params.push(`subject=${encodeURIComponent(this.formData.emailSubject)}`)
+            if (this.formData.emailBody) params.push(`body=${encodeURIComponent(this.formData.emailBody)}`)
+            if (params.length > 0) emailContent += `?${params.join('&')}`
+            return emailContent
+
+          case 'phone':
+            return `tel:${this.formData.phone}`
+
+          case 'sms':
+            let smsContent = `sms:${this.formData.smsNumber}`
+            if (this.formData.smsMessage) {
+              smsContent += `?body=${encodeURIComponent(this.formData.smsMessage)}`
+            }
+            return smsContent
+
+          case 'wifi':
+            const security = this.formData.wifiSecurity === 'nopass' ? 'nopass' : this.formData.wifiSecurity
+            const hidden   = this.formData.wifiHidden ? 'true' : 'false'
+            return `WIFI:T:${security};S:${this.formData.wifiSSID};P:${this.formData.wifiPassword};H:${hidden};;`
+
+          case 'vcard':
+            let vcard = 'BEGIN:VCARD\nVERSION:3.0\n'
+            if (this.formData.vcardFirstName || this.formData.vcardLastName) {
+              vcard += `FN:${this.formData.vcardFirstName} ${this.formData.vcardLastName}\n`
+              vcard += `N:${this.formData.vcardLastName};${this.formData.vcardFirstName};;;\n`
+            }
+            if (this.formData.vcardOrg) vcard += `ORG:${this.formData.vcardOrg}\n`
+            if (this.formData.vcardTitle) vcard += `TITLE:${this.formData.vcardTitle}\n`
+            if (this.formData.vcardPhone) vcard += `TEL:${this.formData.vcardPhone}\n`
+            if (this.formData.vcardEmail) vcard += `EMAIL:${this.formData.vcardEmail}\n`
+            if (this.formData.vcardWebsite) vcard += `URL:${this.formData.vcardWebsite}\n`
+            if (this.formData.vcardAddress) {
+              vcard += `ADR:;;${this.formData.vcardAddress.replace(/,/g, ';')};;;\n`
+            }
+            vcard += 'END:VCARD'
+            return vcard
+
+          case 'location':
+            let locationContent = `geo:${this.formData.latitude},${this.formData.longitude}`
+            if (this.formData.locationName) {
+              locationContent += `?q=${this.formData.latitude},${this.formData.longitude}(${encodeURIComponent(this.formData.locationName)})`
+            }
+            return locationContent
+
+          case 'event':
+            const formatDate = (dateStr) => {
+              if (!dateStr) return ''
+              return new Date(dateStr).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+            }
+
+            let event = 'BEGIN:VEVENT\n'
+            event += `SUMMARY:${this.formData.eventTitle}\n`
+            event += `DTSTART:${formatDate(this.formData.eventStartDate)}\n`
+            if (this.formData.eventEndDate) {
+              event += `DTEND:${formatDate(this.formData.eventEndDate)}\n`
+            }
+            if (this.formData.eventLocation) {
+              event += `LOCATION:${this.formData.eventLocation}\n`
+            }
+            if (this.formData.eventDescription) {
+              event += `DESCRIPTION:${this.formData.eventDescription}\n`
+            }
+            event += 'END:VEVENT'
+            return event
+
+          case 'crypto':
+            let cryptoContent = ''
+            switch (this.formData.cryptoType) {
+              case 'bitcoin':
+                cryptoContent = `bitcoin:${this.formData.cryptoAddress}`
+                break
+              case 'ethereum':
+                cryptoContent = `ethereum:${this.formData.cryptoAddress}`
+                break
+              case 'litecoin':
+                cryptoContent = `litecoin:${this.formData.cryptoAddress}`
+                break
+              case 'dogecoin':
+                cryptoContent = `dogecoin:${this.formData.cryptoAddress}`
+                break
+            }
+
+            const cryptoParams = []
+            if (this.formData.cryptoAmount) cryptoParams.push(`amount=${this.formData.cryptoAmount}`)
+            if (this.formData.cryptoMessage) cryptoParams.push(`message=${encodeURIComponent(this.formData.cryptoMessage)}`)
+            if (cryptoParams.length > 0) cryptoContent += `?${cryptoParams.join('&')}`
+
+            return cryptoContent
+
+          default:
+            return ''
+        }
+      },
+
+      async generateQR () {
+        if (!this.isFormValid) return
+
+        this.isGenerating   = true
+        this.successMessage = ''
+
+        try {
+          // Wait for QRCode library to be available
+          if (typeof QRCode === 'undefined') {
+            throw new Error('QRCode library not loaded')
+          }
+
+          // Use current color values
+          const color = {
+            dark: this.darkColor || '#000000',
+            light: this.lightColor || '#FFFFFF'
+          }
+
+          const qrContent = this.generateQRContent();
+          const canvas    = this.$refs.qrCanvas;
+
+          //console.log(this.qrSettings.color)
+
+          await QRCode.toCanvas(canvas, qrContent, {
+            width: this.qrSettings.width,
+            margin: this.qrSettings.margin,
+            color: color,
+            errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
+          })
+
+          this.qrCodeGenerated = true
+          this.successMessage  = '✅ QR code generated successfully!'
+        } catch (error) {
+          console.error('Error generating QR code:', error)
+          this.successMessage = '❌ Error generating QR code. Please check your input and try again.'
+        } finally {
+          this.isGenerating = false
+        }
+      },
+
+      downloadQR (format) {
+        if (!this.qrCodeGenerated) return
+
+        const canvas   = this.$refs.qrCanvas
+        const fileName = `qr-code-${this.selectedType}-${Date.now()}`
+
+        try {
+          if (format === 'png') {
+            const link    = document.createElement('a')
+            link.download = `${fileName}.png`
+            link.href     = canvas.toDataURL()
+            link.click()
+          } else if (format === 'svg') {
+            // Generate SVG version
+            const qrContent = this.generateQRContent()
+            QRCode.toString(qrContent, {
+              type: 'svg',
+              width: this.qrSettings.width,
+              margin: this.qrSettings.margin,
+              color: this.qrSettings.color,
+              errorCorrectionLevel: this.qrSettings.errorCorrectionLevel
+            }).then(svg => {
+              const blob    = new Blob([svg], { type: 'image/svg+xml' })
+              const link    = document.createElement('a')
+              link.download = `${fileName}.svg`
+              link.href     = URL.createObjectURL(blob)
+              link.click()
+              URL.revokeObjectURL(link.href)
+            }).catch(error => {
+              console.error('Error generating SVG:', error)
+            })
+          }
+        } catch (error) {
+          console.error('Error downloading QR code:', error)
+        }
+      }
+    },
+
+    async mounted () {
+      // Wait for QRCode library to load
+      let attempts      = 0
+      const maxAttempts = 50
+
+      while (typeof QRCode === 'undefined' && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        attempts++
+      }
+
+      if (typeof QRCode === 'undefined') {
+        console.error('QRCode library failed to load')
+        this.successMessage = '❌ QR Code library failed to load. Please refresh the page.'
+        return
+      }
+
+      // Ensure color inputs have default values
+      this.qrSettings.darkColor  = this.qrSettings.darkColor || '#000000'
+      this.qrSettings.lightColor = this.qrSettings.lightColor || '#FFFFFF'
+
+      // Initialize IndexedDB
+      try {
+        await this.initDB()
+        await this.loadSavedQRs()
+      } catch (error) {
+        console.error('Error initializing database:', error)
+      }
+
+      // Set default datetime for event type
+      const now                    = new Date()
+      const futureDate             = new Date(now.getTime() + 24 * 60 * 60 * 1000) // Tomorrow
+      this.formData.eventStartDate = now.toISOString().slice(0, 16)
+      this.formData.eventEndDate   = futureDate.toISOString().slice(0, 16)
+    }
+  }).mount('#app')
+</script>
 </body>
 </html>
