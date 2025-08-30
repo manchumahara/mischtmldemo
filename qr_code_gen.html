@@ -1047,7 +1047,15 @@
         // Load the saved QR data into the form
         this.selectedType = qr.type
         this.formData     = { ...qr.formData }
+
+        console.log(qr.settings);
+
+        this.darkColor = qr.settings.color.dark;
+        this.lightColor = qr.settings.color.light;
+
         this.qrSettings   = { ...qr.settings }
+
+
 
         // Generate the QR code
         this.$nextTick(() => {
