@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Counter Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    /* Reset the counter at the container level */
+    .counter-list {
+      counter-reset: section; 
+      list-style: none;
+      padding: 0;
+    }
+
+    .counter-list li {
+      counter-increment: section; /* Increase counter per item */
+      margin: 10px 0;
+      padding-left: 30px;
+      position: relative;
+    }
+
+    .counter-list li::before {
+      content: counter(section) ". "; /* Show the counter value */
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+      color: #f5832b;
+    }
+  </style>
+</head>
+<body>
+  <h2>CSS Counter Demo</h2>
+  <ul class="counter-list">
+    <li>First item</li>
+    <li>Second item</li>
+    <li>Third item</li>
+    <li>Fourth item</li>
+  </ul>
+</body>
+</html>

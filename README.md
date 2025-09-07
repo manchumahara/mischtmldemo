@@ -6,3 +6,4 @@ Html Demo Example
 *   [WordPress Plugin Marketing Guide](wordpress-plugin-marketing-guide.html)
 *   [Content & Image Converter Tool](convert_content.html)
 *   [QR Code Generator](qr_code_gen.html)
+*   [CSS Based Counter](css_counter.html)

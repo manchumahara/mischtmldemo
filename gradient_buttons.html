@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Button Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .button-showcase {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .btn-gradient {
+            /* Base styles */
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            
+            /* Gradient background */
+            background: linear-gradient(135deg, #F5832B 0%, #E6721A 50%, #D4611A 100%);
+            
+            /* Shadow for depth */
+            box-shadow: 0 4px 15px rgba(245, 131, 43, 0.3);
+        }
+
+        .btn-gradient:hover {
+            /* Hover gradient - slightly brighter */
+            background: linear-gradient(135deg, #F6914A 0%, #E87B2A 50%, #D66F2A 100%);
+            
+            /* Enhanced shadow on hover */
+            box-shadow: 0 6px 20px rgba(245, 131, 43, 0.4);
+            
+            /* Slight lift effect */
+            transform: translateY(-2px);
+        }
+
+        .btn-gradient:active {
+            /* Pressed state */
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(245, 131, 43, 0.3);
+        }
+
+        .btn-gradient:focus {
+            outline: none;
+            box-shadow: 0 4px 15px rgba(245, 131, 43, 0.3), 0 0 0 3px rgba(245, 131, 43, 0.2);
+        }
+
+        /* Size variants */
+        .btn-gradient--small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        .btn-gradient--large {
+            padding: 16px 32px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        /* Outline variant */
+        .btn-gradient--outline {
+            background: transparent;
+            border: 2px solid #F5832B;
+            color: #F5832B;
+            box-shadow: none;
+        }
+
+        .btn-gradient--outline:hover {
+            background: linear-gradient(135deg, #F5832B 0%, #E6721A 50%, #D4611A 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(245, 131, 43, 0.4);
+        }
+
+        .demo-section {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .demo-section h3 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .color-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #F5832B;
+        }
+
+        .color-swatch {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #F5832B;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 10px;
+            box-shadow: 0 2px 8px rgba(245, 131, 43, 0.3);
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Icon button layout */
+        .btn-gradient--icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-gradient--icon svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .btn-gradient--small {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        .btn-gradient--small svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Download Button - Green */
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Free Version Button - Blue */
+        .btn-free {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-free:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Pro Version Button - Gold */
+        .btn-pro {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-pro:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Documentation Button - Purple */
+        .btn-docs {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-docs:hover {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Version Button - Gray */
+        .btn-version {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-version:hover {
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+            transform: translateY(-2px);
+        }
+         .button-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🎨 Gradient Button Demo</h1>
+        
+        <div class="color-info">
+            <p><span class="color-swatch"></span><strong>Brand Color:</strong> #F5832B</p>
+        </div>
+
+        <div class="demo-section">
+            <h3>Standard Button</h3>
+            <div class="button-showcase">
+                <button class="btn-gradient">Click Me!</button>
+                <button class="btn-gradient">Get Started</button>
+                <button class="btn-gradient">Learn More</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Size Variants</h3>
+            <div class="button-showcase">
+                <button class="btn-gradient btn-gradient--small">Small</button>
+                <button class="btn-gradient">Normal</button>
+                <button class="btn-gradient btn-gradient--large">Large</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Outline Style</h3>
+            <div class="button-showcase">
+                <button class="btn-gradient btn-gradient--outline">Outline Button</button>
+                <button class="btn-gradient btn-gradient--outline btn-gradient--small">Small Outline</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Interactive Features</h3>
+            <div class="button-showcase">
+                <button class="btn-gradient" onclick="showAlert()">Click for Alert</button>
+                <a href="#" class="btn-gradient" onclick="showAlert(); return false;">Link Button</a>
+            </div>
+        </div>
+
+        <p style="text-align: center; margin-top: 30px; font-style: italic;">
+            Try hovering, clicking, and using keyboard navigation (Tab + Enter) to see all the interactive states!
+        </p>
+
+        <div class="button-row">
+            <!-- Download Button -->
+            <button class="btn-gradient btn-gradient--icon btn-download" onclick="alert('Download started!')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download
+            </button>
+
+            <!-- Free Version Button -->
+            <a href="#" class="btn-gradient btn-gradient--icon btn-free" onclick="alert('Opening Free Version...'); return false;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 9.739 9 11 5.16-1.261 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+                Free Version
+            </a>
+        </div>
+
+        <div class="button-row">
+            <!-- Pro Version Button -->
+            <a href="#" class="btn-gradient btn-gradient--icon btn-pro" onclick="alert('Opening Pro Version...'); return false;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Pro Version
+            </a>
+
+            <!-- Documentation Button -->
+            <a href="#" class="btn-gradient btn-gradient--icon btn-docs" onclick="alert('Opening Documentation...'); return false;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                Documentation
+            </a>
+        </div>
+
+        <div class="button-row">
+            <!-- Version Button -->
+            <button class="btn-gradient btn-gradient--icon btn-version" onclick="alert('Current Version: v2.1.0')">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+                Version 2.1.0
+            </button>
+
+            <!-- Small Download Button -->
+            <button class="btn-gradient btn-gradient--icon btn-gradient--small btn-download" onclick="alert('Small download!')">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Small Download
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(message = '🎉 Button clicked! The gradient effect looks great with your brand color #F5832B') {
+            alert(message);
+        }
+
+        // Add some keyboard interaction demo
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.activeElement.classList.contains('btn-gradient')) {
+                document.activeElement.click();
+            }
+        });
+    </script>
+</body>
+</html>
